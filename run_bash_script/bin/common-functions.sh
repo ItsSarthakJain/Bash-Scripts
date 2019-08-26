@@ -12,10 +12,6 @@ function fn_run_modular_bash_script(){
 
     SCRIPT_TYPE=$3
 
-    fn_check_if_file_exists "${SCRIPT_PATH}/${SCRIPT_NAME}"; then
-
-
-
     fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
 
     TARGET_MAIL=$4
@@ -31,10 +27,6 @@ function fn_run_modular_bash_script(){
     elif [[ "${SCRIPT_TYPE}" = "${FULL_LOAD_TYPE}" ]];then
 
         MODULE_LIST=(ingest export)
-#
-#    else
-#
-#        fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute as ${SCRIPT_TYPE} is not correcly Assigned" "${TARGET_MAIL}" "${SCRIPT_NAME}"
 
     fi
 
@@ -42,7 +34,7 @@ function fn_run_modular_bash_script(){
 
     DATE=`date "+%Y-%m-%d" `
 
-    mkdir ${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}
+    mkdir -p ${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}
 
     LOG_FILE=${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}/${SCRIPT_NAME}-${TIMESTAMP}.log
 
