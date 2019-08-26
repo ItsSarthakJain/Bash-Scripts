@@ -55,7 +55,7 @@ n2='
 #/**
 #* Integer representation of boolean true
 #*/
-INCREMENT_TYPE="increment"
+INCREMENT_TYPE="incremental"
 
 #/**
 #* Integer representation of boolean true

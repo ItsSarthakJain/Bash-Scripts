@@ -45,7 +45,7 @@ function fn_run_modular_bash_script(){
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}-${MODULE}.sh"
+                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
 
@@ -55,7 +55,7 @@ function fn_run_modular_bash_script(){
 
     if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}-${MODULE}.sh"
+            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
     else
 
@@ -99,55 +99,45 @@ function fn_run_bash_script(){
 
 }
 
-function fn_sendmail(){
+function fn_exit_with_success_message(){
 
-    mailbody=$1
+  exit_code=$1
 
-    fn_assert_variable_is_set "mailbody" "${mailbody}"
+  success_message=$2
 
-    subject=$2
+  target_mail=$3
 
-    fn_assert_variable_is_set "subject" "${subject}"
+  log_file=$4
 
-    target_mail=$3
+  script_name=$5
 
-    fn_assert_variable_is_set "target_mail" "${target_mail}"
+  fn_log "${success_message}"
 
-    logfile=$4
+  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}"
 
-    if fn_check_if_file_exists "${logfile}"; then
-
-        echo "${mailbody}"| mailx -s "${subject}" -a "${logfile}" "${target_mail}"
-
-    fi
+  fn_exit ${exit_code}
 
 }
 
-function fn_send_mail_job_failed(){
+function fn_exit_with_failure_message(){
 
-    failure_message=$1
+  exit_code=$1
 
-    fn_assert_variable_is_set "failure_message" "${failure_message}"
+  failure_message=$2
 
-    target_mail=$2
+  target_mail=$3
 
-    fn_assert_variable_is_set "target_mail" "${target_mail}"
+  log_file=$4
 
-    logs_attchment=$3
+  script_name=$5
 
-    script_name=$4
+  module_name=$6
 
-    fn_assert_variable_is_set "script_name" "${script_name}"
+  fn_log_error "${failure_message}"
 
-    email_subject="${EXECUTION_FAIL_STATUS}"
+  fn_send_mail_job_failed "${failure_message}" "${target_mail}" "${log_file}" "${script_name}" "${module_name}"
 
-    fn_assert_variable_is_set "email_subject" "${email_subject}"
-
-    message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
-
-    #email_format_failure="Content-Type: text/html\r\nSubject: Status Update: Script Failed to execute   \r\n\r\n <p style='font-size:12pt'>Dated: `date +%m-%d-%Y`</p><p style='font-size:11pt'>Dear Recipient,</p><p style='font-size:11pt'>You are receiving this message as ${failure_message}.</p>"
-
-    fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+  fn_exit ${exit_code}
 
 }
 
@@ -173,8 +163,59 @@ function fn_send_mail_job_succeeded(){
 
     message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
 
-    #email_format_success="Content-Type: text/html\r\nSubject: Status Update: Script Executed Successfully   \r\n\r\n <p style='font-size:12pt'>Dated: `date +%m-%d-%Y`</p><p style='font-size:11pt'>Dear Recipient,</p><p style='font-size:11pt'>You are receiving this message as ${success_message}.</p>"
     fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+
+}
+
+function fn_send_mail_job_failed(){
+
+    failure_message=$1
+
+    fn_assert_variable_is_set "failure_message" "${failure_message}"
+
+    target_mail=$2
+
+    fn_assert_variable_is_set "target_mail" "${target_mail}"
+
+    logs_attchment=$3
+
+    script_name=$4
+
+    module_name=$5
+
+    fn_assert_variable_is_set "script_name" "${script_name}"
+
+    email_subject="${EXECUTION_FAIL_STATUS}"
+
+    fn_assert_variable_is_set "email_subject" "${email_subject}"
+
+    message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message} at ${module_name} Script Name: ${script_name} ${n1}Module Failed to Execute: ${module_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
+
+    fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+
+}
+
+function fn_sendmail(){
+
+    mailbody=$1
+
+    fn_assert_variable_is_set "mailbody" "${mailbody}"
+
+    subject=$2
+
+    fn_assert_variable_is_set "subject" "${subject}"
+
+    target_mail=$3
+
+    fn_assert_variable_is_set "target_mail" "${target_mail}"
+
+    logfile=$4
+
+    if fn_check_if_file_exists "${logfile}"; then
+
+        echo "${mailbody}"| mailx -s "${subject}" -a "${logfile}" "${target_mail}"
+
+    fi
 
 }
 
@@ -208,25 +249,7 @@ function fn_exit(){
 
 }
 
-function fn_exit_with_failure_message(){
 
-  exit_code=$1
-
-  failure_message=$2
-
-  target_mail=$3
-
-  log_file=$4
-
-  script_name=$5
-
-  fn_log_error "${failure_message}"
-
-  fn_send_mail_job_failed "${failure_message}" "${target_mail}" "${log_file}" "${script_name}"
-
-  fn_exit ${exit_code}
-
-}
 
 function fn_check_if_file_exists(){
 
@@ -242,25 +265,7 @@ function fn_check_if_file_exists(){
 
 }
 
-function fn_exit_with_success_message(){
 
-  exit_code=$1
-
-  success_message=$2
-
-  target_mail=$3
-
-  log_file=$4
-
-  script_name=$5
-
-  fn_log "${success_message}"
-
-  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}"
-
-  fn_exit ${exit_code}
-
-}
 
 function fn_assert_variable_is_set(){
 
