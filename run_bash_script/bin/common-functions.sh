@@ -36,7 +36,11 @@ function fn_run_modular_bash_script(){
 
     TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
 
-    LOG_FILE=${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${TIMESTAMP}.log
+    DATE=`date "+%Y-%m-%d" `
+
+    mkdir ${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}
+
+    LOG_FILE=${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}/${SCRIPT_NAME}-${TIMESTAMP}.log
 
     for MODULE in "${MODULE_LIST[@]}"
 
