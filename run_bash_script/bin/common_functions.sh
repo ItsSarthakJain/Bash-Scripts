@@ -6,6 +6,8 @@ function fn_run_modular_bash_script(){
 
     fn_assert_variable_is_set "SCRIPT_NAME" "${SCRIPT_NAME}"
 
+    SCRIPT="$(cut -d'|' -f1 <<<$line)"
+
     SCRIPT_TYPE=$2
 
     fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
@@ -23,6 +25,23 @@ function fn_run_modular_bash_script(){
     elif [[ "${SCRIPT_TYPE}" = "${FULL_LOAD_TYPE}" ]];then
 
         MODULE_LIST=(ingest export)
+
+    for MODULE in "${MODULE_LIST[@]}"
+
+        do
+           SCRIPT_PATH=${SCRIPT}-${MODULE}/bin/
+
+           time sh ${SCRIPT_PATH}${SCRIPT_NAME}>>${LOG_FILE}
+
+           exit_code=$?
+
+           if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
+
+            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}"
+
+           fi
+
+        done
 
     else
 
