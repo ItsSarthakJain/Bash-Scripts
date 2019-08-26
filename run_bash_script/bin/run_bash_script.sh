@@ -57,7 +57,7 @@ MODULE_HOME="`dirname "${SCRIPT_DIRECTORY}"`"
 
  fn_run_modular_bash_script \
     ${SCRIPT_NAME} \
-    ${SCRIPT_PATH} \
     ${SCRIPT_TYPE} \
+    ${SCRIPT_PATH} \
     ${TARGET_MAIL}
 
