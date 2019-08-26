@@ -36,7 +36,7 @@ function fn_run_modular_bash_script(){
 
     TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
 
-    LOG_FILE=${SCRIPT_PATH}${SCRIPT_NAME}-${TIMESTAMP}.log
+    LOG_FILE=${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${TIMESTAMP}.log
 
     for MODULE in "${MODULE_LIST[@]}"
 
@@ -49,13 +49,13 @@ function fn_run_modular_bash_script(){
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${SCRIPT_PATH}${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
+                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
 
         done
 
-    fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${SCRIPT_PATH}${LOG_FILE}" "${SCRIPT_NAME}"
+    fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
 
 }
 
