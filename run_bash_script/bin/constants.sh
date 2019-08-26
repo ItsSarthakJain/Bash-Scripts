@@ -34,6 +34,19 @@
 #*/
 BOOLEAN_TRUE=1
 
+#/**
+#* Integer representation of boolean true
+#*/
+n1='
+'
+
+#/**
+#* Integer representation of boolean true
+#*/
+n2='
+
+'
+
 ###
 # Integer representation of boolean true
 # @Type  : Integer

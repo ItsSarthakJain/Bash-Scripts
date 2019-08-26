@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 function fn_run_modular_bash_script(){
 
@@ -60,19 +60,19 @@ function fn_run_bash_script(){
 
     TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
 
-    LOG_FILE=${SCRIPT_NAME::-3}-${TIMESTAMP}.log
+    LOG_FILE=${SCRIPT_NAME}-${TIMESTAMP}.log
 
-    time sh ${SCRIPT_PATH}/${SCRIPT_NAME}>>${LOG_FILE}
+    time sh ${SCRIPT_PATH}${SCRIPT_NAME}>>${LOG_FILE}
 
     exit_code=$?
 
-    if [[ "${SCRIPT_TYPE}" != "${EXIT_CODE_SUCCESS}" ]];then
+    if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${LOG_FILE}"
+            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
 
     else
 
-            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully" "${TARGET_MAIL}" "${LOG_FILE}"
+            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
 
     fi
 
@@ -114,13 +114,18 @@ function fn_send_mail_job_failed(){
 
     logs_attchment=$3
 
+    script_name=$4
+
+    fn_assert_variable_is_set "script_name" "${script_name}"
+
     email_subject="${EXECUTION_FAIL_STATUS}"
 
     fn_assert_variable_is_set "email_subject" "${email_subject}"
 
-    message_body=$Dated:`date +%m-%d-%Y`\n\n\n Dear Recipient,\n\nYou are receiving this message as ${failure_message}.'
+    message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
 
     #email_format_failure="Content-Type: text/html\r\nSubject: Status Update: Script Failed to execute   \r\n\r\n <p style='font-size:12pt'>Dated: `date +%m-%d-%Y`</p><p style='font-size:11pt'>Dear Recipient,</p><p style='font-size:11pt'>You are receiving this message as ${failure_message}.</p>"
+
     fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
 
 }
@@ -137,14 +142,18 @@ function fn_send_mail_job_succeeded(){
 
     logs_attchment=$3
 
+    script_name=$4
+
+    fn_assert_variable_is_set "script_name" "${script_name}"
+
     email_subject="${EXECUTION_SUCCESS_STATUS}"
 
     fn_assert_variable_is_set "email_subject" "${email_subject}"
 
-    messae_body=$'Dated: `date +%m-%d-%Y`\n\n\n Dear Recipient,\n\nYou are receiving this message as ${success_message}.'
+    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
 
     #email_format_success="Content-Type: text/html\r\nSubject: Status Update: Script Executed Successfully   \r\n\r\n <p style='font-size:12pt'>Dated: `date +%m-%d-%Y`</p><p style='font-size:11pt'>Dear Recipient,</p><p style='font-size:11pt'>You are receiving this message as ${success_message}.</p>"
-    fn_sendmail "${messae_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+    fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
 
 }
 
@@ -188,9 +197,11 @@ function fn_exit_with_failure_message(){
 
   log_file=$4
 
+  script_name=$5
+
   fn_log_error "${failure_message}"
 
-  fn_send_mail_job_failed "${failure_message}" "${target_mail}" "${log_file}"
+  fn_send_mail_job_failed "${failure_message}" "${target_mail}" "${log_file}" "${script_name}"
 
   fn_exit ${exit_code}
 
@@ -220,9 +231,11 @@ function fn_exit_with_success_message(){
 
   log_file=$4
 
+  script_name=$5
+
   fn_log "${success_message}"
 
-  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}"
+  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}"
 
   fn_exit ${exit_code}
 
