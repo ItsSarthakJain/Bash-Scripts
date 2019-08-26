@@ -57,8 +57,6 @@ function fn_run_modular_bash_script(){
 
     fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${SCRIPT_PATH}${LOG_FILE}" "${SCRIPT_NAME}"
 
-    fi
-
 }
 
 function fn_run_bash_script(){
