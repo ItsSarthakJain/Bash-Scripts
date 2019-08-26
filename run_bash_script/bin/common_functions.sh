@@ -6,8 +6,6 @@ function fn_run_modular_bash_script(){
 
     fn_assert_variable_is_set "SCRIPT_NAME" "${SCRIPT_NAME}"
 
-    SCRIPT="$(cut -d'|' -f1 <<<$line)"
-
     SCRIPT_TYPE=$2
 
     fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
@@ -25,39 +23,43 @@ function fn_run_modular_bash_script(){
     elif [[ "${SCRIPT_TYPE}" = "${FULL_LOAD_TYPE}" ]];then
 
         MODULE_LIST=(ingest export)
+#
+#    else
+#
+#        fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute as ${SCRIPT_TYPE} is not correcly Assigned" "${TARGET_MAIL}" "${SCRIPT_NAME}"
+
+    fi
 
     for MODULE in "${MODULE_LIST[@]}"
 
         do
-           SCRIPT_PATH=${SCRIPT}-${MODULE}/bin/
+           MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
-           time sh ${SCRIPT_PATH}${SCRIPT_NAME}>>${LOG_FILE}
+           TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
+
+           LOG_FILE=${SCRIPT_NAME}-${MODULE}-${TIMESTAMP}.log
+
+           time sh ${MODULE_TO_EXECUTE}>>${LOG_FILE}
 
            exit_code=$?
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}"
+                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
 
         done
 
-    else
-
-        fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute as ${SCRIPT_TYPE} is not correcly Assigned" "${TARGET_MAIL}"
-
-    fi
-
     exit_code=$?
 
     if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}"
+            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}-${MODULE}.sh"
 
     else
 
-            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully" "${TARGET_MAIL}"
+            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully" "${TARGET_MAIL}" "${SCRIPT_NAME}"
 
     fi
 
