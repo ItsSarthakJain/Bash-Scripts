@@ -12,6 +12,10 @@ function fn_run_modular_bash_script(){
 
     SCRIPT_TYPE=$3
 
+    fn_check_if_file_exists "${SCRIPT_PATH}/${SCRIPT_NAME}"; then
+
+
+
     fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
 
     TARGET_MAIL=$4
@@ -53,7 +57,7 @@ function fn_run_modular_bash_script(){
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
+                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n1}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
 
@@ -187,7 +191,7 @@ function fn_send_mail_job_failed(){
 
     fn_assert_variable_is_set "email_subject" "${email_subject}"
 
-    message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message} at ${module_name} Script Name: ${script_name} ${n1}Module Failed to Execute: ${module_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
+    message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message}At ${module_name} ${n2}Script Name: ${script_name} ${n1}Module Failed to Execute: ${module_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
 
     fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
 
