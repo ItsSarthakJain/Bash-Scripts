@@ -47,12 +47,17 @@ MODULE_HOME="`dirname "${SCRIPT_DIRECTORY}"`"
 
  fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
 
+ SCRIPT_PATH=$2
+
+ fn_assert_variable_is_set "SCRIPT_PATH" "${SCRIPT_PATH}"
+
  TARGET_MAIL=$3
 
  fn_assert_variable_is_set "TARGET_MAIL" "${TARGET_MAIL}"
 
- fn_run_bash_script \
+ fn_run_modular_bash_script \
     ${SCRIPT_NAME} \
+    ${SCRIPT_PATH} \
     ${SCRIPT_TYPE} \
     ${TARGET_MAIL}
 

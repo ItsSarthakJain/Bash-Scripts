@@ -6,11 +6,15 @@ function fn_run_modular_bash_script(){
 
     fn_assert_variable_is_set "SCRIPT_NAME" "${SCRIPT_NAME}"
 
-    SCRIPT_TYPE=$2
+    SCRIPT_PATH=$2
+
+    fn_assert_variable_is_set "SCRIPT_PATH" "${SCRIPT_PATH}"
+
+    SCRIPT_TYPE=$3
 
     fn_assert_variable_is_set "SCRIPT_TYPE" "${SCRIPT_TYPE}"
 
-    TARGET_MAIL=$3
+    TARGET_MAIL=$4
 
     fn_assert_variable_is_set "TARGET_MAIL" "${TARGET_MAIL}"
 
@@ -30,36 +34,28 @@ function fn_run_modular_bash_script(){
 
     fi
 
+    TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
+
+    LOG_FILE=${SCRIPT_PATH}${SCRIPT_NAME}-${TIMESTAMP}.log
+
     for MODULE in "${MODULE_LIST[@]}"
 
         do
            MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
-           TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
-
-           LOG_FILE=${SCRIPT_NAME}-${MODULE}-${TIMESTAMP}.log
-
-           time sh ${MODULE_TO_EXECUTE}>>${LOG_FILE}
+           time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE}>>${LOG_FILE}
 
            exit_code=$?
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
-                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
+                fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${SCRIPT_PATH}${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
 
         done
 
-    exit_code=$?
-
-    if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
-
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute" "${TARGET_MAIL}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
-
-    else
-
-            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully" "${TARGET_MAIL}" "${SCRIPT_NAME}"
+    fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${SCRIPT_PATH}${LOG_FILE}" "${SCRIPT_NAME}"
 
     fi
 
