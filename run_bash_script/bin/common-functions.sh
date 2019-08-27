@@ -43,6 +43,8 @@ function fn_run_modular_bash_script(){
         do
            MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
+           printf "\n\nExecuting ${SCRIPT_NAME}-${MODULE}.sh \n\n"
+
            time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE} 2>&1 |& tee -a ${LOG_FILE}
 
            exit_code=$?
@@ -52,6 +54,8 @@ function fn_run_modular_bash_script(){
                 fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n1}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
            fi
+
+           printf "\n\nExecuted ${SCRIPT_NAME}-${MODULE}.sh Successfully\n\n"
 
         done
 
