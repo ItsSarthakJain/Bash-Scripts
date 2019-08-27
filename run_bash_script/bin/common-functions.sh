@@ -22,7 +22,7 @@ function fn_run_modular_bash_script(){
 
     if [[ "${SCRIPT_TYPE}" = "${INCREMENT_TYPE}" ]];then
 
-        MODULE_LIST=(cleanup setup ingest export)
+        MODULE_LIST=(setup ingest export cleanup)
 
     elif [[ "${SCRIPT_TYPE}" = "${FULL_LOAD_TYPE}" ]];then
 
