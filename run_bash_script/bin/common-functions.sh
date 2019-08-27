@@ -22,7 +22,7 @@ function fn_run_modular_bash_script(){
 
     if [[ "${SCRIPT_TYPE}" = "${INCREMENT_TYPE}" ]];then
 
-        MODULE_LIST=(setup ingest export cleanup)
+        MODULE_LIST=(cleanup setup ingest export)
 
     elif [[ "${SCRIPT_TYPE}" = "${FULL_LOAD_TYPE}" ]];then
 
@@ -43,7 +43,7 @@ function fn_run_modular_bash_script(){
         do
            MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
-           time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE}>>${LOG_FILE}
+           time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE} 2>&1 |& tee -a ${LOG_FILE}
 
            exit_code=$?
 
