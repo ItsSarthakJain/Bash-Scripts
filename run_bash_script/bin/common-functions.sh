@@ -43,11 +43,11 @@ function fn_run_modular_bash_script(){
         do
            MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
-           printf "\n\nExecuting ${SCRIPT_NAME}-${MODULE}.sh \n\n"
+           printf "${n2}`date "[+%Y-%m-%d %H:%M:%S]" `Executing ${SCRIPT_NAME}-${MODULE}.sh ${n2}">>${LOG_FILE}
 
            time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE} 2>&1 |& tee -a ${LOG_FILE}
 
-           exit_code=$?
+           exit_code=${PIPESTATUS[0]}
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
 
@@ -55,45 +55,11 @@ function fn_run_modular_bash_script(){
 
            fi
 
-           printf "\n\nExecuted ${SCRIPT_NAME}-${MODULE}.sh Successfully\n\n"
+           printf "${n2}`date "[+%Y-%m-%d %H:%M:%S]" `Executed ${SCRIPT_NAME}-${MODULE}.sh Successfully ${n2}">>${LOG_FILE}
 
         done
 
     fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
-
-}
-
-function fn_run_bash_script(){
-
-    SCRIPT_NAME=$1
-
-    fn_assert_variable_is_set "SCRIPT_NAME" "${SCRIPT_NAME}"
-
-    SCRIPT_PATH=$2
-
-    fn_assert_variable_is_set "SCRIPT_PATH" "${SCRIPT_PATH}"
-
-    TARGET_MAIL=$3
-
-    fn_assert_variable_is_set "TARGET_MAIL" "${TARGET_MAIL}"
-
-    TIMESTAMP=`date "+%Y-%m-%d|%H:%M:%S" `
-
-    LOG_FILE=${SCRIPT_NAME}-${TIMESTAMP}.log
-
-    time sh ${SCRIPT_PATH}${SCRIPT_NAME}>>${LOG_FILE}
-
-    exit_code=$?
-
-    if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
-
-            fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
-
-    else
-
-            fn_exit_with_success_message "0" "${SCRIPT_NAME} Executed Successfully.${n2}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}"
-
-    fi
 
 }
 
@@ -111,7 +77,11 @@ function fn_exit_with_success_message(){
 
   fn_log "${success_message}"
 
-  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}"
+  cnt="$(grep -m2 "Map input records" "${log_file}" | head -n1)"
+
+  count=$(echo "cnt" | tr -dc '0-9')
+
+  fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}" "${count}"
 
   fn_exit ${exit_code}
 
@@ -155,11 +125,15 @@ function fn_send_mail_job_succeeded(){
 
     fn_assert_variable_is_set "script_name" "${script_name}"
 
+    count=$5
+
+    fn_assert_variable_is_set "count" "${count}"
+
     email_subject="${EXECUTION_SUCCESS_STATUS}"
 
     fn_assert_variable_is_set "email_subject" "${email_subject}"
 
-    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
+    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `${n1}Records ingested from teradata:"${count}""
 
     fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
 
