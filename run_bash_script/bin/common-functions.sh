@@ -129,13 +129,9 @@ function fn_send_mail_job_succeeded(){
 
     fn_assert_variable_is_set "count" "${count}"
 
-    email_subject="${EXECUTION_SUCCESS_STATUS}"
+    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `${n1}Records ingested to Enriched Table:"${count}""
 
-    fn_assert_variable_is_set "email_subject" "${email_subject}"
-
-    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `${n1}Records ingested from teradata:"${count}""
-
-    fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+    fn_sendmail "${message_body}" "Status Update- Script "${script_name}" Executed Successfully" "${target_mail}" "${logs_attchment}"
 
 }
 
@@ -157,13 +153,9 @@ function fn_send_mail_job_failed(){
 
     fn_assert_variable_is_set "script_name" "${script_name}"
 
-    email_subject="${EXECUTION_FAIL_STATUS}"
-
-    fn_assert_variable_is_set "email_subject" "${email_subject}"
-
     message_body="Dear Recipient,${n2}You are receiving this message as ${failure_message}At ${module_name} ${n2}Script Name: ${script_name} ${n1}Module Failed to Execute: ${module_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `"
 
-    fn_sendmail "${message_body}" "${email_subject}" "${target_mail}" "${logs_attchment}"
+    fn_sendmail "${message_body}" "Status Update- Script "${script_name}" Failed to Execute" "${target_mail}" "${logs_attchment}"
 
 }
 
