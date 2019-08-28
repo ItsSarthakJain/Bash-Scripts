@@ -43,7 +43,7 @@ function fn_run_modular_bash_script(){
         do
            MODULE_TO_EXECUTE=${SCRIPT_NAME}-${MODULE}/bin/${SCRIPT_NAME}-${MODULE}.sh
 
-           printf "${n2}`date "[+%Y-%m-%d %H:%M:%S]" `Executing ${SCRIPT_NAME}-${MODULE}.sh ${n2}">>${LOG_FILE}
+           printf "${n2}`date "+[%Y-%m-%d %H:%M:%S]" `Executing ${SCRIPT_NAME}-${MODULE}.sh ${n2}">>${LOG_FILE}
 
            time sh ${SCRIPT_PATH}${MODULE_TO_EXECUTE} 2>&1 |& tee -a ${LOG_FILE}
 
@@ -55,7 +55,7 @@ function fn_run_modular_bash_script(){
 
            fi
 
-           printf "${n2}`date "[+%Y-%m-%d %H:%M:%S]" `Executed ${SCRIPT_NAME}-${MODULE}.sh Successfully ${n2}">>${LOG_FILE}
+           printf "${n2}`date "+[%Y-%m-%d %H:%M:%S]" `Executed ${SCRIPT_NAME}-${MODULE}.sh Successfully ${n2}">>${LOG_FILE}
 
         done
 
