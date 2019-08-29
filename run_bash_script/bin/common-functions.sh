@@ -244,7 +244,9 @@ function fn_assert_variable_is_set(){
 
     failure_message="${variable_name} variable is not set"
 
-    fn_exit_with_failure_message "${exit_code}" "${failure_message}"
+    fn_log "${failure_message}"
+
+    fn_exit "${exit_code}"
 
   fi
 
