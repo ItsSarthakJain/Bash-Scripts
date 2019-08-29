@@ -79,7 +79,7 @@ function fn_exit_with_success_message(){
 
   cnt="$(grep -m2 "Map input records" "${log_file}" | head -n1)"
 
-  count=$(echo "cnt" | tr -dc '0-9')
+  count=$(echo "${cnt}" | tr -dc '0-9')
 
   fn_send_mail_job_succeeded "${success_message}" "${target_mail}" "${log_file}" "${script_name}" "${count}"
 
