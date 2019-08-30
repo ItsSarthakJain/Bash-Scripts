@@ -129,7 +129,7 @@ function fn_send_mail_job_succeeded(){
 
     fn_assert_variable_is_set "count" "${count}"
 
-    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `${n1}Records ingested to Enriched Table:"${count}""
+    message_body="Dear Recipient,${n2}You are receiving this message as ${success_message}Script Name: ${script_name} ${n1}User: aa00ha ${n1}Server: phvgrm6${n1}Execution Time:`date "+%Y-%m-%d %H:%M:%S" `${n1}Records ingested from teradata:"${count}"${n1}Records ingested to Enriched Table:"${count}""
 
     fn_sendmail "${message_body}" "Status Update- Script "${script_name}" Executed Successfully" "${target_mail}" "${logs_attchment}"
 
