@@ -68,6 +68,8 @@ function fn_run_modular_bash_script(){
 
        MODULE_LIST=("${ARRAY[@]}")
 
+       rm ${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}.attempt
+
      fi
 
     for MODULE in "${MODULE_LIST[@]}"
