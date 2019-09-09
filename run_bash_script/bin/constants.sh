@@ -53,17 +53,23 @@ n2='
 # @Final : true
 
 #/**
-#* Integer representation of boolean true
+#* Incremental type tables
 #*/
 INCREMENT_TYPE="incremental"
 
+
 #/**
-#* Integer representation of boolean true
+#* Incremental type tables
+#*/
+SCRIPT_PATH="/appl/spool/users/aa00ha/itds/prod/deploy/projects/com.albertsons.itds/teradata-ingest/latest/"
+
+#/**
+#* Status Success
 #*/
 EXECUTION_FAIL_STATUS="Status Update- Script Failed to execute"
 
 #/**
-#* Integer representation of boolean true
+#* Status Fail
 #*/
 EXECUTION_SUCCESS_STATUS="Status Update- Script Executed Successfully"
 
@@ -73,7 +79,7 @@ EXECUTION_SUCCESS_STATUS="Status Update- Script Executed Successfully"
 # @Final : true
 
 #/**
-#* Integer representation of boolean true
+#* Full load type tables
 #*/
 FULL_LOAD_TYPE="full-load"
 

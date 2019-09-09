@@ -20,6 +20,10 @@ function fn_run_modular_bash_script(){
 
     declare -a MODULE_LIST
 
+    declare -a ARRAY
+
+    ARRAY=()
+
     if [[ "${SCRIPT_TYPE}" = "${INCREMENT_TYPE}" ]];then
 
         MODULE_LIST=(setup ingest export cleanup)
@@ -34,9 +38,37 @@ function fn_run_modular_bash_script(){
 
     DATE=`date "+%Y-%m-%d" `
 
+    flag=0
+
     mkdir -p ${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}
 
     LOG_FILE=${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}-${DATE}/${SCRIPT_NAME}-${TIMESTAMP}.log
+
+     if fn_check_if_file_exists "${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}.attempt"
+
+       then
+
+            MODULE_FAILED_AT=$(cat "${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}.attempt")
+
+            for MODULE in "${MODULE_LIST[@]}"; do
+
+               if [[ "${MODULE}" = "${MODULE_FAILED_AT}" ]]; then
+
+                    flag=1
+
+               fi
+
+		       if [ ${flag} -eq "1" ];then
+
+			     ARRAY+=(${MODULE})
+
+		       fi
+
+            done
+
+       MODULE_LIST=("${ARRAY[@]}")
+
+     fi
 
     for MODULE in "${MODULE_LIST[@]}"
 
@@ -50,6 +82,8 @@ function fn_run_modular_bash_script(){
            exit_code=${PIPESTATUS[0]}
 
            if [[ "${exit_code}" != "${EXIT_CODE_SUCCESS}" ]];then
+
+                echo ${MODULE}>>${SCRIPT_PATH}/logs_for_bash_script_runner/${SCRIPT_NAME}.attempt
 
                 fn_exit_with_failure_message "1" "${SCRIPT_NAME} Failed to Execute.${n1}" "${TARGET_MAIL}" "${LOG_FILE}" "${SCRIPT_NAME}" "${SCRIPT_NAME}-${MODULE}.sh"
 
